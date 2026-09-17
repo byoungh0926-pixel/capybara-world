@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카피바라 월드 | 세상에서 가장 온순한 동물</title>
+<style>
+  :root {
+    --bg: #241508;
+    --bg-alt: #2f1c0d;
+    --card: #3a2412;
+    --border: rgba(210, 170, 120, 0.22);
+    --text: #f0e2c8;
+    --muted: #c2a37c;
+    --green: #a3c47f;
+    --white: #fffaf0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* ---------- 공통 ---------- */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 90px 0; }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 56px;
+    font-size: 1.05rem;
+  }
+
+  /* ---------- 내비게이션 ---------- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(36, 21, 8, 0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--green); }
+
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* ---------- 히어로 ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 64px;
+    background:
+      linear-gradient(rgba(24, 13, 4, 0.72), rgba(24, 13, 4, 0.72)),
+      url('capybara.jpg') center / cover no-repeat;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-emoji {
+    font-size: 6rem;
+    animation: bob 3s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+
+  .hero h1 {
+    font-size: 3.2rem;
+    line-height: 1.25;
+    margin: 20px 0 16px;
+    color: var(--white);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero h1 em { font-style: normal; color: var(--green); }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: #e3d0ae;
+    max-width: 560px;
+    margin-bottom: 36px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 36px;
+    border-radius: 999px;
+    background: var(--green);
+    color: #1f1209;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.05rem;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .btn:hover { background: #8fb56a; transform: translateY(-2px); }
+
+  /* ---------- 특징 카드 ---------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    border-color: rgba(163, 196, 127, 0.45);
+  }
+
+  .card-icon { font-size: 2.6rem; margin-bottom: 14px; }
+
+  .card h3 { margin-bottom: 10px; color: var(--white); font-size: 1.15rem; }
+
+  .card p { font-size: 0.95rem; color: var(--muted); }
+
+  /* ---------- 정보 리스트 ---------- */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .fact {
+    display: flex;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--green);
+    border-radius: 16px;
+    padding: 24px;
+    align-items: flex-start;
+  }
+
+  .fact-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .fact h4 { margin-bottom: 6px; color: var(--white); }
+
+  .fact p { font-size: 0.93rem; color: var(--muted); }
+
+  /* ---------- 퀴즈 ---------- */
+  #quiz {
+    background:
+      linear-gradient(rgba(24, 13, 4, 0.8), rgba(24, 13, 4, 0.8)),
+      url('onsen-capybara.jpg') center / cover no-repeat;
+  }
+
+  .quiz-box {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .quiz-box h3 { font-size: 1.35rem; margin-bottom: 24px; color: var(--white); }
+
+  .quiz-options { display: grid; gap: 12px; }
+
+  .quiz-options button {
+    padding: 14px;
+    border: 2px solid #6b4a2e;
+    border-radius: 12px;
+    background: #31200f;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quiz-options button:hover:not(:disabled) {
+    background: #4a2f18;
+    border-color: var(--muted);
+  }
+
+  .quiz-options button.correct {
+    background: #31401f;
+    border-color: var(--green);
+    color: #cfe6ae;
+  }
+
+  .quiz-options button.wrong {
+    background: #42221d;
+    border-color: #d9695f;
+    color: #f0b3ab;
+  }
+
+  .quiz-result { margin-top: 20px; font-weight: 700; min-height: 28px; color: var(--muted); }
+
+  /* ---------- 푸터 ---------- */
+  footer {
+    background: #170d05;
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+
+  footer strong { font-size: 1.1rem; display: block; margin-bottom: 8px; color: var(--white); }
+
+  /* ---------- 반응형 ---------- */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.2rem; }
+    section { padding: 64px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a href="#home" class="logo">카피바라 <span>월드</span> 🦫</a>
+    <ul class="nav-links">
+      <li><a href="#about">소개</a></li>
+      <li><a href="#features">특징</a></li>
+      <li><a href="#facts">재미있는 사실</a></li>
+      <li><a href="#quiz">퀴즈</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-emoji">🦫</div>
+  <h1>세상에서 가장 <em>온순한</em> 동물<br>카피바라</h1>
+  <p>누구와도 잘 지내는 세상 모든 동물의 친구, 카피바라의 세계로 초대합니다.</p>
+  <a href="#about" class="btn">카피바라 만나보기</a>
+</section>
+
+<section id="about">
+  <div class="container">
+    <h2 class="section-title">카피바라는 어떤 동물?</h2>
+    <p class="section-sub">Hydrochoerus hydrochaeris — "물돼지"라는 뜻</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🌎</div>
+        <h3>서식지</h3>
+        <p>남아메리카의 강, 습지, 호수 근처에 살아요. 물가를 좋아해서 뛰어난 수영 실력을 자랑합니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📏</div>
+        <h3>크기</h3>
+        <p>몸길이 약 100~130cm, 몸무게는 35~65kg. 세계에서 가장 큰 설치류예요!</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌿</div>
+        <h3>먹이</h3>
+        <p>풀과 수초를 주로 먹는 완전한 초식동물입니다. 하루에 자기 몸무게만큼 풀을 뜯기도 해요.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👨‍👩‍👧‍👦</div>
+        <h3>사회성</h3>
+        <p>보통 10~20마리 무리를 지어 생활하며, 무리 내에서 강한 유대감을 유지합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: var(--bg-alt);">
+  <div class="container">
+    <h2 class="section-title">카피바라의 매력 포인트</h2>
+    <p class="section-sub">왜 전 세계가 카피바라에 반했을까요?</p>
+    <div class="facts">
+      <div class="fact">
+        <div class="fact-num">01</div>
+        <div>
+          <h4>세상 동물들의 친구</h4>
+          <p>새, 원숭이, 심지어 악어 위에서도 잠을 자는 사진이 유명해요. 누구에게나 화를 내지 않는 평화주의자입니다.</p>
+        </div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">02</div>
+        <div>
+          <h4>온천 마스터</h4>
+          <p>일본 삿포로의 온천에 몸을 담그고 얼굴에 감귤을 올린 모습이 세계적인 힐링 아이콘이 되었습니다.</p>
+        </div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">03</div>
+        <div>
+          <h4>수영 선수</h4>
+          <p>발가락 사이에 물갈퀴가 있어 수영을 잘하고, 위험하면 물속으로 도망가 물에 잠긴 채 코만 내밉니다.</p>
+        </div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">04</div>
+        <div>
+          <h4>늘 그렇게 느긋하게</h4>
+          <p>하루 대부분을 늘어져서 보냅니다. 멸종 위기에서 벗어난 지금, 누구보다 여유로운 삶을 살고 있죠.</p>
+        </div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">05</div>
+        <div>
+          <h4>말보다 냄새로 소통</h4>
+          <p>특유의 냄새 분비물로 무리 구성원과 소통하며, 가볍게 꽥꽥거리는 소리로 의사를 표현합니다.</p>
+        </div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">06</div>
+        <div>
+          <h4>엄청난 갈아먹기</h4>
+          <p>치아는 평생 자라기 때문에 나무껍질이나 풀을 계속 갈아 먹어야 해요. 하루 종일 뭔가를 씹는 이유!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="facts">
+  <div class="container">
+    <h2 class="section-title">재미있는 사실</h2>
+    <p class="section-sub">알면 알수록 매력적인 카피바라</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🔥</div>
+        <h3>카피바라 신앙?</h3>
+        <p>16세기 남아메리카의 가톨릭 교회는 카피바라를 "물속에 사는 생물"로 보아 금식 기간에도 먹을 수 있게 허용했다는 이야기가 있습니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🐦</div>
+        <h3>새들의 택시</h3>
+        <p>카피바라 등에 새가 앉아 기생충을 잡아먹는 공생 관계를 이루며, 등이 일종의 "모빌 홈" 역할을 합니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <h3>물속 잠수함</h3>
+        <p>최대 5분까지 물속에 숨을 참을 수 있어, 천적을 만나면 물속에 숨어 버립니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="container">
+    <h2 class="section-title">카피바라 퀴즈</h2>
+    <p class="section-sub">당신은 얼마나 카피바라를 알고 있나요?</p>
+    <div class="quiz-box">
+      <h3 id="quiz-question"></h3>
+      <div class="quiz-options" id="quiz-options"></div>
+      <p class="quiz-result" id="quiz-result"></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>🦫 카피바라 월드</strong>
+  <p>세상 모든 온화한 마음을 위하여 | 만든 이: 영훈</p>
+</footer>
+
+<script>
+  const pool = [
+    {
+      q: "카피바라는 세계에서 가장 큰 무엇일까요?",
+      options: ["고양이과 동물", "설치류", "유대류", "식육류"],
+      answer: 1,
+      explain: "카피바라는 세계에서 가장 큰 설치류(齧齒類)입니다!"
+    },
+    {
+      q: "카피바라의 학명 'Hydrochoerus'의 뜻은?",
+      options: ["숲속의 왕", "물돼지", "큰 토끼", "강의 수호자"],
+      answer: 1,
+      explain: "그리스어로 hydro(물) + choerus(돼지), 즉 '물돼지'라는 뜻입니다."
+    },
+    {
+      q: "일본의 유명한 카피바라 온천에 자주 올려주는 것은?",
+      options: ["감귤", "수박", "단풍잎", "생선"],
+      answer: 0,
+      explain: "얼굴에 감귤(유자)을 올린 온천 카피바라가 유명합니다."
+    },
+    {
+      q: "카피바라는 주로 무리를 몇 마리씩 지어 다닐까요?",
+      options: ["혼자 다닌다", "10~20마리", "100마리 이상", "2마리만"],
+      answer: 1,
+      explain: "보통 10~20마리 정도의 무리를 이루어 생활합니다."
+    },
+    {
+      q: "카피바라의 주된 서식지는 어디일까요?",
+      options: ["남아메리카", "유럽", "호주", "북극"],
+      answer: 0,
+      explain: "남아메리카의 강, 습지, 호수 근처에 삽니다."
+    },
+    {
+      q: "카피바라는 최대 얼마나 물속에 숨을 참을 수 있을까요?",
+      options: ["약 30초", "약 2분", "약 5분", "약 30분"],
+      answer: 2,
+      explain: "최대 약 5분까지 숨을 참을 수 있어 위험하면 물속에 숨습니다."
+    },
+    {
+      q: "카피바라의 발가락 사이에 있어 수영을 돕는 것은?",
+      options: ["물갈퀴", "비늘", "풀순", "지방층"],
+      answer: 0,
+      explain: "발가락 사이의 물갈퀴 덕분에 수영을 아주 잘합니다."
+    },
+    {
+      q: "카피바라가 주로 먹는 것은?",
+      options: ["고기", "물고기", "풀과 수초", "과일만"],
+      answer: 2,
+      explain: "완전한 초식동물로 풀과 수초를 주로 먹습니다."
+    },
+    {
+      q: "카피바라의 치아는 평생 어떻게 될까요?",
+      options: ["계속 자란다", "새로 난다", "그대로다", "한 번만 교체된다"],
+      answer: 0,
+      explain: "치아가 평생 자라기 때문에 계속 갈아 먹어야 합니다."
+    },
+    {
+      q: "위험을 만난 카피바라가 가장 먼저 도망가는 곳은?",
+      options: ["나무 위", "굴속", "물속", "바위 뒤"],
+      answer: 2,
+      explain: "물속에 잠긴 채 코만 내밀고 위험을 피합니다."
+    },
+    {
+      q: "갓 태어난 카피바라 새끼는 어떤가요?",
+      options: ["바로 걸어 다니며 풀을 먹는다", "오래 눈을 뜨지 못한다", "부모 등에 매달린다", "2년간 젖만 먹는다"],
+      answer: 0,
+      explain: "카피바라 새끼는 태어나자마자 걸을 수 있고 곧 풀을 먹기 시작합니다."
+    },
+    {
+      q: "카피바라의 등에서 기생충을 잡아먹는 새와의 관계는?",
+      options: ["경쟁", "포식", "공생", "기생"],
+      answer: 2,
+      explain: "새는 먹이를 얻고 카피바라는 몸을 청소받는 서로 이로운 공생 관계입니다."
+    }
+  ];
+
+  const ROUND_SIZE = 5;
+
+  let quizzes = [];
+  let current = 0;
+  let score = 0;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startRound() {
+    quizzes = shuffle(pool).slice(0, ROUND_SIZE).map(item => {
+      const options = shuffle(item.options);
+      return { q: item.q, options, answer: options.indexOf(item.options[item.answer]), explain: item.explain };
+    });
+    current = 0;
+    score = 0;
+  }
+
+  const qEl = document.getElementById('quiz-question');
+  const optEl = document.getElementById('quiz-options');
+  const resEl = document.getElementById('quiz-result');
+
+  function renderQuiz() {
+    if (current >= quizzes.length) {
+      qEl.textContent = `🎉 퀴즈 완료! ${quizzes.length}문제 중 ${score}문제를 맞혔어요!`;
+      optEl.innerHTML = '';
+      resEl.textContent = score === quizzes.length
+        ? "대단해요! 당신은 카피바라 박사 🦫"
+        : "괜찮아요! 카피바라처럼 느긋하게 다시 시작해봐요 🌿";
+      const restart = document.createElement('button');
+      restart.textContent = "다시 도전하기";
+      restart.onclick = () => { startRound(); renderQuiz(); };
+      optEl.appendChild(restart);
+      return;
+    }
+
+    const quiz = quizzes[current];
+    resEl.textContent = `Q${current + 1} / ${quizzes.length}`;
+    qEl.textContent = quiz.q;
+    optEl.innerHTML = '';
+
+    quiz.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.onclick = () => {
+        const buttons = optEl.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+        if (i === quiz.answer) {
+          btn.classList.add('correct');
+          score++;
+          resEl.textContent = `정답! 🎉 ${quiz.explain}`;
+        } else {
+          btn.classList.add('wrong');
+          buttons[quiz.answer].classList.add('correct');
+          resEl.textContent = `아쉬워요 😢 ${quiz.explain}`;
+        }
+        setTimeout(() => { current++; renderQuiz(); }, 2200);
+      };
+      optEl.appendChild(btn);
+    });
+  }
+
+  startRound();
+  renderQuiz();
+</script>
+
+</body>
+</html>
