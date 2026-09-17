@@ -267,6 +267,70 @@
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
   }
 
+  #gb-form { display: grid; gap: 12px; }
+
+  #gb-name, #gb-message {
+    width: 100%;
+    background: #31200f;
+    border: 2px solid #6b4a2e;
+    border-radius: 12px;
+    color: var(--text);
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  #gb-name:focus, #gb-message:focus { outline: none; border-color: var(--green); }
+
+  #gb-message { min-height: 90px; resize: vertical; }
+
+  .gb-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+  #gb-counter { color: var(--muted); font-size: 0.85rem; }
+
+  .gb-btn { padding: 10px 24px; font-size: 0.95rem; cursor: pointer; border: none; }
+
+  .gb-btn:disabled { opacity: 0.6; cursor: wait; }
+
+  .gb-status { text-align: center; min-height: 24px; margin-top: 12px; font-weight: 600; color: var(--green); }
+
+  .gb-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .gb-entry {
+    background: #31200f;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+
+  .gb-entry-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+  }
+
+  .gb-entry-name { font-weight: 800; color: var(--green); }
+
+  .gb-entry-time { color: var(--muted); }
+
+  .gb-entry-msg {
+    color: var(--text);
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .gb-empty { text-align: center; color: var(--muted); padding: 20px 0; }
+
   /* ---------- 푸터 ---------- */
   footer {
     background: #170d05;
@@ -428,24 +492,18 @@
 <section id="guestbook">
   <div class="container">
     <h2 class="section-title">방명록</h2>
-    <p class="section-sub">카피바라에게 한마디 남겨주세요 🖊️ (GitHub 계정으로 작성)</p>
+    <p class="section-sub">GitHub 계정 없이 누구나 자유롭게 한마디 남겨주세요 🖊️</p>
     <div class="guestbook-box">
-      <script src="https://giscus.app/client.js"
-        data-repo="byoungh0926-pixel/capybara-world"
-        data-repo-id="R_kgDOUedXBQ"
-        data-category="General"
-        data-category-id="DIC_kwDOUedXBc4DFym-"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="transparent_dark"
-        data-lang="ko"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-      </script>
+      <form id="gb-form">
+        <input id="gb-name" type="text" maxlength="30" placeholder="이름 (선택, 최대 30자 — 미입력 시 익명의 카피바라)">
+        <textarea id="gb-message" maxlength="500" placeholder="메시지를 입력하세요 (최대 500자)" required></textarea>
+        <div class="gb-footer">
+          <span id="gb-counter">0 / 500</span>
+          <button type="submit" class="btn gb-btn">남기기 🦫</button>
+        </div>
+      </form>
+      <p class="gb-status" id="gb-status"></p>
+      <div class="gb-list" id="gb-list"></div>
     </div>
   </div>
 </section>
@@ -601,6 +659,111 @@
 
   startRound();
   renderQuiz();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const gb = supabase.createClient(
+    "https://maahqlbxyizdxndivgvw.supabase.co",
+    "sb_publishable_cVfWjg4-oRR0rVY0Ifwx8Q_NE0ImDDT"
+  );
+
+  const gbForm = document.getElementById('gb-form');
+  const gbName = document.getElementById('gb-name');
+  const gbMessage = document.getElementById('gb-message');
+  const gbCounter = document.getElementById('gb-counter');
+  const gbStatus = document.getElementById('gb-status');
+  const gbList = document.getElementById('gb-list');
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s ?? '';
+    return d.innerHTML;
+  }
+
+  function fmt(t) {
+    return new Date(t).toLocaleString('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderEntry(e) {
+    const div = document.createElement('div');
+    div.className = 'gb-entry';
+    div.dataset.id = e.id;
+    div.innerHTML =
+      `<div class="gb-entry-head">` +
+      `<span class="gb-entry-name">${esc(e.name)}</span>` +
+      `<span class="gb-entry-time">${fmt(e.created_at)}</span>` +
+      `</div>` +
+      `<p class="gb-entry-msg">${esc(e.message)}</p>`;
+    return div;
+  }
+
+  function removeEmpty() {
+    const empty = gbList.querySelector('.gb-empty');
+    if (empty) empty.remove();
+  }
+
+  function prependEntry(e) {
+    if (gbList.querySelector(`[data-id="${e.id}"]`)) return;
+    removeEmpty();
+    gbList.prepend(renderEntry(e));
+  }
+
+  async function loadEntries() {
+    const { data, error } = await gb.from('guestbook')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) {
+      gbStatus.textContent = '방명록을 불러오지 못했어요 😢';
+      gbStatus.style.color = '#f0b3ab';
+      return;
+    }
+    gbList.innerHTML = '';
+    if (!data.length) {
+      gbList.innerHTML = '<p class="gb-empty">아직 방명록이 비어 있어요. 첫 방문자가 되어주세요! 🦫</p>';
+      return;
+    }
+    data.forEach(e => gbList.appendChild(renderEntry(e)));
+  }
+
+  gbMessage.addEventListener('input', () => {
+    gbCounter.textContent = `${gbMessage.value.length} / 500`;
+  });
+
+  gbForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const name = gbName.value.trim() || '익명의 카피바라';
+    const message = gbMessage.value.trim();
+    if (!message) return;
+    const btn = gbForm.querySelector('button');
+    btn.disabled = true;
+    gbStatus.textContent = '';
+    const { data, error } = await gb.from('guestbook')
+      .insert({ name, message })
+      .select()
+      .single();
+    btn.disabled = false;
+    if (error) {
+      gbStatus.textContent = '저장에 실패했어요. 다시 시도해 주세요 😢';
+      gbStatus.style.color = '#f0b3ab';
+      return;
+    }
+    gbMessage.value = '';
+    gbCounter.textContent = '0 / 500';
+    gbStatus.textContent = '남겨주셔서 감사합니다! 🎉';
+    gbStatus.style.color = '';
+    if (data) prependEntry(data);
+  });
+
+  gb.channel('guestbook-live')
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'guestbook' },
+      payload => prependEntry(payload.new)
+    )
+    .subscribe();
+
+  loadEntries();
 </script>
 
 </body>
