@@ -252,6 +252,21 @@
 
   .quiz-result { margin-top: 20px; font-weight: 700; min-height: 28px; color: var(--muted); }
 
+  /* ---------- 방명록 ---------- */
+  #guestbook {
+    background: var(--bg-alt);
+  }
+
+  .guestbook-box {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  }
+
   /* ---------- 푸터 ---------- */
   footer {
     background: #170d05;
@@ -282,6 +297,7 @@
       <li><a href="#features">특징</a></li>
       <li><a href="#facts">재미있는 사실</a></li>
       <li><a href="#quiz">퀴즈</a></li>
+      <li><a href="#guestbook">방명록</a></li>
     </ul>
   </div>
 </header>
@@ -405,6 +421,31 @@
       <h3 id="quiz-question"></h3>
       <div class="quiz-options" id="quiz-options"></div>
       <p class="quiz-result" id="quiz-result"></p>
+    </div>
+  </div>
+</section>
+
+<section id="guestbook">
+  <div class="container">
+    <h2 class="section-title">방명록</h2>
+    <p class="section-sub">카피바라에게 한마디 남겨주세요 🖊️ (GitHub 계정으로 작성)</p>
+    <div class="guestbook-box">
+      <script src="https://giscus.app/client.js"
+        data-repo="byoungh0926-pixel/capybara-world"
+        data-repo-id="R_kgDOUedXBQ"
+        data-category="General"
+        data-category-id="DIC_kwDOUedXBc4DFym-"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="ko"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
     </div>
   </div>
 </section>
